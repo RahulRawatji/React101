@@ -2,11 +2,16 @@ import fs from 'node:fs/promises';
 
 import bodyParser from 'body-parser';
 import express from 'express';
+import cors from 'cors';
+
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
+app.use(cors());
+
+app.use(cors({ origin: '*' }));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -66,4 +71,4 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
 });
 
-app.listen(3000);
+app.listen(3001);

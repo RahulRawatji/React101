@@ -1,28 +1,28 @@
-import { currencyFormat } from "../utils/formatting";
-import Button from "./UI/Button";
-import { useContext } from "react";
-import CartContext from "../store/CartContext";
+import { useEffect, useState } from "react";
+import MealItem from "./MealItem";
 
-export default function MealItem({ meal }) {
-  const cartCtx = useContext(CartContext);
+export default function Meals(){
 
-  function handleAddMealToCart() {
-    cartCtx.addItem(meal);
-  }
+    const [mealsData, setMealsData] = useState([]);
 
-  return (
-    <li className="meal-item">
-      <article>
-        <img src={`https://localhost:3000/${meal.image}`} alt={meal.name} />
-        <div>
-          <h3>{meal.name}</h3>
-          <p className="meal-item-price">{currencyFormat.format(meal.price)}</p>
-          <p className="meal-item-description">{meal.description}</p>
-        </div>
-        <p className="meal-item-action">
-          <Button onClick={handleAddMealToCart}>Add to Cart</Button>
-        </p>
-      </article>
-    </li>
-  );
+    useEffect(()=>{
+        fetchMeals();
+    },[])
+
+    async function fetchMeals(){
+        const response = await fetch("https://solid-zebra-67qvj97pqvp3xxrv-3001.app.github.dev/meals");
+        if(!response.ok){
+ 
+        }
+        const meals = await response.json();
+        setMealsData(meals)
+     }
+
+    if(mealsData.length == 0){
+        return <div>Loading</div>
+    }
+
+    return <ul id='meals'>
+        {mealsData?.map(meal=><MealItem key={meal.id} meal={meal}/>)}
+    </ul>
 }
