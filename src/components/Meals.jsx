@@ -1,27 +1,20 @@
 import { useEffect, useState } from "react";
 import MealItem from "./MealItem";
+import useHttp from "../hooks/useHttp";
+
+const requestHeader = {}
 
 export default function Meals(){
+    
+    const {data:mealsData, isLoading, error} = useHttp("https://solid-zebra-67qvj97pqvp3xxrv-3001.app.github.dev/meals",requestHeader,[])
 
-    const [mealsData, setMealsData] = useState([]);
-
-    useEffect(()=>{
-        fetchMeals();
-    },[])
-
-    async function fetchMeals(){
-        const response = await fetch("https://solid-zebra-67qvj97pqvp3xxrv-3001.app.github.dev/meals");
-        if(!response.ok){
- 
-        }
-        const meals = await response.json();
-        setMealsData(meals)
-     }
-
-    if(mealsData.length == 0){
-        return <div>Loading</div>
+    if(isLoading){
+        return <p className="center">Loading</p>
     }
 
+    if(error){
+        return <Error title="Failed to fetch" message={error}/>
+    }
     return <ul id='meals'>
         {mealsData?.map(meal=><MealItem key={meal.id} meal={meal}/>)}
     </ul>
